@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Alon Wolf</title>
+    <link>https://a10nw01f.github.io/post/</link>
+    <description>Recent content in Posts on Alon Wolf</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 10 Jan 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://a10nw01f.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Generative C&#43;&#43;</title>
+      <link>https://a10nw01f.github.io/generative_cpp/</link>
+      <pubDate>Mon, 10 Jan 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://a10nw01f.github.io/generative_cpp/</guid>
+      <description>Code Generation in C++ The two main ways to generate code in c++ are templates and macros. While macros can manipulate text they lack the compile time information and constraints that the compiler provides. Templates on the other hand are incredibly powerful especially with c++20&amp;rsquo;s concepts, non type template parameters and increased constexpr support, however they still lack the ability to manipulate strings such as identifiers and keywords.
+Metaclasses A proposal by Herb Sutter to add metaclasses to the c++ language.</description>
+    </item>
+    
+  </channel>
+</rss>
