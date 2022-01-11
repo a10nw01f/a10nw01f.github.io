@@ -31,7 +31,7 @@
     
     
 
-    <meta name="keyword"  content="test4, testkw">
+    <meta name="keyword"  content="">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
     <title>Generative C&#43;&#43;</title>
@@ -194,7 +194,7 @@ Metaclasses can be used to generate regular c++ classes and this proposal relies
 Compile time code - supported by the constexpr keyword.<br>
 Injection - no support.</p>
 <p>Metaclasses aren&rsquo;t part of c++20 and might also not be available in the next versions of the language.<br>
-For more information I recommend watching the cppcon talk by Herb Sutter <a href="https://www.youtube.com/watch?v=4AfRAVcThyA">(link)</a>.</p>
+For more information I recommend watching the cppcon talk by Herb Sutter. <a href="https://www.youtube.com/watch?v=4AfRAVcThyA">(link)</a></p>
 <h1 id="code-generation-in-other-languages">Code Generation in Other Languages</h1>
 <p>Rust macros can generate code in a functional style or by modifying the abstract syntax tree.<br>
 Go templates can be used to manipulate strings, for example to generate a static site or code in other languages (even c++).<br>
@@ -249,21 +249,21 @@ In Jai #run allows arbitrary compile time code execution.</p>
 <h1 id="overview">Overview</h1>
 <ol>
 <li>Use c++20&rsquo;s compile time computation abilities to generate code as a constexpr string</li>
-<li>Make the compiler output the generaTted string</li>
+<li>Make the compiler output the generated string</li>
 <li>Hook the compiler output</li>
 <li>Parse the string and perform arbitrary logic</li>
 <li>Write the generated code to a file which will be compiled</li>
 </ol>
 <h2 id="constexpr-string-generation">Constexpr String Generation</h2>
 <p>Constexpr string formatting in c++20 is easier than ever since std::string, std::vector and many other types can be used in a constexpr context.
-Before formatting we can validate the input by using concepts, static assert or throwing from a consteval function. Each of these methods has its own pros and cons in terms of integration and the information that the compiler provides when an error occurs.</p>
+Before formatting we can validate the input by using concepts, static assert or by throwing an exception from a consteval function. Each of these methods has its own pros and cons in terms of integration and the information that the compiler provides when an error occurs.</p>
 <h2 id="static-print">Static Print</h2>
 <p>There is no static print in the standard so we have to make our own and this is how it can be done:</p>
 <ol>
 <li>Convert from std::string to std::array so it can be passed as a non type template parameter</li>
 <li>Create a template class which takes non type template parameters so that our generated string will be part of the signature</li>
 <li>Use <strong>FUNCSIG</strong> to get a string literal of our signature which contains the string</li>
-<li>Output this string literal with #prama message (for gcc/clang we can generate a warning which will output the string instead of steps 4 and 5)</li>
+<li>Output this string literal with #prama message</li>
 </ol>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#ff79c6">export</span> <span style="color:#ff79c6">template</span><span style="color:#ff79c6">&lt;</span><span style="color:#ff79c6">auto</span>...<span style="color:#ff79c6">&gt;</span>
 <span style="color:#ff79c6">struct</span> <span style="color:#50fa7b">StaticPrint</span>
@@ -273,7 +273,8 @@ Before formatting we can validate the input by using concepts, static assert or 
 <span style="color:#ff79c6">#pragma message(__FUNCSIG__)
 </span><span style="color:#ff79c6"></span>    }
 };
-</code></pre></div><h2 id="hook">Hook</h2>
+</code></pre></div><p>Note: for gcc/clang we can generate a warning which will output the string instead of steps 4 and 5.</p>
+<h2 id="hook">Hook</h2>
 <p>The compiler output is written into {project_name}.log file.
 By looking at the call stack in procmon.exe we can see that just before NtWriteFile and the kernel functions the call passes through the WriteFile function in KERNELBASE.dll which is where we will set our hook.</p>
 <p>
@@ -296,7 +297,7 @@ We can filter the calls to WriteFile by checking if the target file ends with _G
 <li>Has access to compile time information such as types and constants.</li>
 <li>Can be used to generate code in c++ or in other languages during compilation.</li>
 <li>Enables arbitrary compile time execution.</li>
-<li>Works with types and strings which can be used to represent identifiers, keywards, brackets etc.</li>
+<li>Works with types and strings which can be used to represent identifiers, keywords, brackets etc.</li>
 <li>Can set restrictions and validate inputs.</li>
 <li>Can be extended to have multiple code generation steps (code which generates code which generates code&hellip;).</li>
 </ol>
@@ -308,7 +309,7 @@ We can filter the calls to WriteFile by checking if the target file ends with _G
 <li>Relies on undefined behaviour.</li>
 </ol>
 <h1 id="conclusion">Conclusion</h1>
-<p>This technique enables compile time arbitrary execution and code generation. Unlike macros which are executed by the preprocessor in this technique we have the clarity, safety and type information of the compiler so we can import and call a c++ function instead of a macro. We can also pass and generate identifiers, keywards and other syntax elements which can&rsquo;t be passed to a template. This comes at the cost of relying on undefined behaviour, additional setup and difficult compiler/development environment portability.</p>
+<p>This technique enables compile time arbitrary execution and code generation. Unlike macros which are executed by the preprocessor in this technique we have the clarity, safety and type information of the compiler so we can import and call a c++ function instead of a macro. We can also pass and generate identifiers, keywords and other syntax elements which can&rsquo;t be passed to a template. This comes at the cost of relying on undefined behaviour, additional setup and difficult compiler/development environment portability.</p>
 
 
                 
