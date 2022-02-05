@@ -55,7 +55,7 @@ body{
     font-family:-apple-system,"Helvetica Neue",Arial,"PingFang SC","Hiragino Sans GB",STHeiti,"Microsoft YaHei","Microsoft JhengHei","Source Han Sans SC","Noto Sans CJK SC","Source Han Sans CN","Noto Sans SC","Source Han Sans TC","Noto Sans CJK TC","WenQuanYi Micro Hei",SimSun,sans-serif;
     line-height:1.7;
     font-size:16px;
-    color:white;
+    color:#c9d1d9;
     overflow-x:hidden
 }
 p{
@@ -71,7 +71,7 @@ h4{
     font-size:21px
 }
 a{
-    color:white;
+    color:#c9d1d9;
 }
 a:hover,a:focus{
     color:#0085a1
@@ -461,7 +461,7 @@ pre code{
     }
 }
 .post-preview>a{
-    color:white;
+    color:#c9d1d9;
 }
 .post-preview>a:hover,.post-preview>a:focus{
     text-decoration:none;
@@ -633,8 +633,9 @@ form .row:first-child .floating-label-form-group{
     font-weight:800;
     letter-spacing:1px;
     padding:10px;
-    background-color:#fff;
-    border-radius:0
+    background-color:#0d1117;
+    border-radius:0;
+    border-color: #333333;
 }
 @media only screen and (min-width:768px){
     .pager li>a,.pager li>span{
@@ -643,16 +644,16 @@ form .row:first-child .floating-label-form-group{
     }
 }
 .pager li>a{
-    color:white;
+    color:#c9d1d9;
 }
 .pager li>a:hover,.pager li>a:focus{
-    color:#fff;
+    color:#c9d1d9;
     background-color:#0085a1;
     border:1px solid #0085a1
 }
 .pager .disabled>a,.pager .disabled>a:hover,.pager .disabled>a:focus,.pager .disabled>span{
     color:gray;
-    background-color:white;
+    background-color:#c9d1d9;
     cursor:not-allowed
 }
 ::-moz-selection{
@@ -980,7 +981,8 @@ body{
     }
   }
 body{
-    background-color: #000000cf;
+    /*background-color: #000000cf;*/
+    background-color: #0d1117;
 }
 span.fa-stack.fa-lg {
     color: grey;
