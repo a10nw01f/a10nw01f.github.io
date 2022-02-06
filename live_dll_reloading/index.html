@@ -248,7 +248,7 @@ os<span style="color:#ff79c6">.</span>rename(new_dll, old_dll)
 <li>When a DLL is loaded with LoadLibrary(&ldquo;originalFileName.dll&rdquo;) any subsequent call to LoadLibrary(&ldquo;originalFileName.dll&rdquo;) will return a handle to the same DLL even if the file has been renamed and a different file is now called &ldquo;originalFileName.dll&rdquo;</li>
 <li>If we rename a loaded DLL to &ldquo;newFileName.dll&rdquo; and call LoadLibrary(&ldquo;newFileName.dll&rdquo;) it will return a handle to the original DLL only while the file name is still &ldquo;newFileName.dll&rdquo;</li>
 </ol>
-<p>Every time we rename and compile a new DLL the file names would be somthing like ExampleDLL.dll and ExampleDLL_old.dll so in order to always get a handle to the correct DLL we can rename it to an unique temporary name, load it with the new name and rename it back.</p>
+<p>Every time we rename and compile a new DLL the file names would be something like ExampleDLL.dll and ExampleDLL_old.dll so in order to always get a handle to the correct DLL we can rename it to an unique temporary name, load it with the new name and rename it back.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">HMODULE <span style="color:#50fa7b">LoadLibraryWithRename</span>(<span style="color:#ff79c6">const</span> <span style="color:#8be9fd">char</span><span style="color:#ff79c6">*</span> name)
 {
     <span style="color:#ff79c6">auto</span> tmp_name <span style="color:#ff79c6">=</span> GetNewGUID() <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#34;_tmp.dll&#34;</span>;
@@ -260,7 +260,7 @@ os<span style="color:#ff79c6">.</span>rename(new_dll, old_dll)
 }
 </code></pre></div><h2 id="intergaration-with-existing-project">Intergaration with Existing Project</h2>
 <p>While DLLReplacer can be used as a single header library or as a DLL and both approaches can be easily integrated into an existing project we can borrow a trick from the previous blog post and use DLL injection.
-Running DLLIinjector.exe processname.exe DLLReplacer.DLL will replace a DLL in your process by using DLL injection and without the need to modify anything in your project.</p>
+Running DLLInjector.exe processname.exe DLLReplacer.dll will replace a DLL in your process by using DLL injection and without the need to modify anything in your project.</p>
 <h2 id="typical-workflow">Typical Workflow</h2>
 <ol>
 <li>Run your program</li>
@@ -268,7 +268,7 @@ Running DLLIinjector.exe processname.exe DLLReplacer.DLL will replace a DLL in y
 <li>Run rename_old.bat</li>
 <li>Compile the modified DLL (detach the debugger if needed)</li>
 <li>Run replace_dll.bat</li>
-<li>Repeat steps 2-5 in order to live reload the new changes</li>
+<li>Repeat steps 2-5 in order to live reload more new changes</li>
 </ol>
 <h2 id="limitations">Limitations</h2>
 <ol>
@@ -280,7 +280,7 @@ Running DLLIinjector.exe processname.exe DLLReplacer.DLL will replace a DLL in y
 <h2 id="possible-future-improvements">Possible Future Improvements</h2>
 <p>A direction that could be worth investigating is parsing the PDB file and hooking all the functions instead of only the exported ones since it will enable replacing non exported functions. Another possible improvement is to hook all previous versions of a DLL. This can increase performance by always having only one hook jump instead of many at the cost of slightly slower load times since all previous versions of each function needs to be hooked. This is already implemented in the DLLReloader class but not as an injectable DLL.</p>
 <h1 id="conclusion">Conclusion</h1>
-<p>While there are still some limitations having fast iterations with zero integration effort has already saved me a lot of time and was definitely worth it for under 200 lines of cpp and a very short python script. I hope it will be helpful or educational to you too.</p>
+<p>While there are still some limitations having fast iterations with almost no integration effort has already saved me a lot of time and was definitely worth it for under 200 lines of cpp and a very short python script. I hope it will be helpful or educational to you too.</p>
 
 
                 
