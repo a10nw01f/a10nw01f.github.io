@@ -13,7 +13,7 @@
       <pubDate>Fri, 04 Feb 2022 00:00:00 +0000</pubDate>
       
       <guid>https://a10nw01f.github.io/live_dll_reloading/</guid>
-      <description>Live DLL Reloading Iteration time is very important for development and debugging. Usually, in order to see the effect of a change in code we need to close the process, compile a new version, start the process again and then reach a specific part or scenario in the program - this entire flow can be very slow. DLL live reloading can decrease iteration times by replacing an old DLL with a new one during runtime without even closing the process so that we can observe the changes almost immediatly.</description>
+      <description>Live DLL Reloading Iteration time is very important for development and debugging. Usually, in order to see the effects of a change in code we need to close the process, compile a new version, start the process again and then reach a specific part or scenario in the program - this entire flow can be very slow. DLL live reloading can decrease iteration times by replacing an old DLL with a new one during runtime without even closing the process so that we can observe the changes almost immediatly.</description>
     </item>
     
     <item>

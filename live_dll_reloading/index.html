@@ -184,7 +184,7 @@
 
                 
                 <h1 id="live-dll-reloading">Live DLL Reloading</h1>
-<p>Iteration time is very important for development and debugging. Usually, in order to see the effect of a change in code we need to close the process, compile a new version, start the process again and then reach a specific part or scenario in the program - this entire flow can be very slow. DLL live reloading can decrease iteration times by replacing an old DLL with a new one during runtime without even closing the process so that we can observe the changes almost immediatly.  Moreover, you can easily integrate DLL live reloading with an existing project without changing a single line. While visual studio can compile and load changes it isn&rsquo;t available in many build configurations.</p>
+<p>Iteration time is very important for development and debugging. Usually, in order to see the effects of a change in code we need to close the process, compile a new version, start the process again and then reach a specific part or scenario in the program - this entire flow can be very slow. DLL live reloading can decrease iteration times by replacing an old DLL with a new one during runtime without even closing the process so that we can observe the changes almost immediatly.  Moreover, you can easily integrate DLL live reloading with an existing project without changing a single line. While visual studio can compile and load changes it isn&rsquo;t available in many build configurations.</p>
 <p>The code is available at:<br>
 <a href="https://github.com/a10nw01f/DLLReplacer">https://github.com/a10nw01f/DLLReplacer</a></p>
 <h2 id="the-main-issue-with-unloading-dlls">The Main Issue with Unloading DLLs</h2>
@@ -195,12 +195,12 @@
 <a href="https://github.com/nlguillemot/live_reload_test">https://github.com/nlguillemot/live_reload_test</a><br>
 <a href="https://gian-sass.com/rapid-native-game-development-with-live-code-reloading/">https://gian-sass.com/rapid-native-game-development-with-live-code-reloading/</a><br>
 <a href="https://github.com/RandyGaul/C-Hotloading">https://github.com/RandyGaul/C-Hotloading</a></p>
-<p>but most of them have a main drawback - they unload the old DLL. Initially this may seem like a good idea since it releases the DLL file for writing and frees some of the memory, however it also means that any pointer which pointed to any static data or code (including vtables) is now invalid and will probably crash your program or worse.</p>
+<p>but most of them have a main drawback - they unload the old DLL. Initially this may seem like a good idea since it releases the DLL file for writing and frees some of the memory, however it also means that any pointer which pointed to any static data or code (including vtables) is now invalid and accessing it will probably crash your program or worse.</p>
 <h2 id="a-different-approach">A Different Approach</h2>
 <p>A better approach in my opinion is to keep the old DLL in memory and set a hook between the old functions and the new ones so we wouldn&rsquo;t have the dangling pointers problem anymore. It does mean that we will have two or more versions of the DLL in memory, but since the additional memory usage is usually relatively small in comparison to the available system memory you probably wouldn&rsquo;t run out of memory beacuse of this technique.</p>
 <h2 id="hooks">Hooks</h2>
 <p>Iterating over all the exports of a DLL and setting up the hooks can be easily done by using the Detours library. <a href="https://github.com/microsoft/Detours">(link)</a><br>
-Not all of the exports are functions so a dirty and easy solution to find out if a symbol address is a function is to check it resides in executable memory</p>
+Not all of the exports are functions so an easy and dirty solution is to check if it&rsquo;s address resides in executable memory</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#8be9fd">bool</span> <span style="color:#50fa7b">IsFunction</span>(<span style="color:#8be9fd">void</span><span style="color:#ff79c6">*</span> address)
 {
     <span style="color:#ff79c6">constexpr</span> <span style="color:#8be9fd">uint64_t</span> mask <span style="color:#ff79c6">=</span> PAGE_EXECUTE <span style="color:#ff79c6">|</span> PAGE_EXECUTE_READ <span style="color:#ff79c6">|</span> PAGE_EXECUTE_READWRITE <span style="color:#ff79c6">|</span> PAGE_EXECUTE_WRITECOPY;
@@ -221,11 +221,11 @@ Not all of the exports are functions so a dirty and easy solution to find out if
     }
 });
 </code></pre></div><h2 id="config-file">Config File</h2>
-<p>For simplicity reasons the name of the dll file and the regex are read from dll_replacer_config.txt and if we for example want to replace all the functions in ExampleDLL.dll then the config file should look like this</p>
+<p>For simplicity reasons the name of the dll file and the regex are read from dll_replacer_config.txt. For example if we want to replace all the functions in ExampleDLL.dll then the config file should look like this</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-txt" data-lang="txt">ExampleDll
 .*
 </code></pre></div><h2 id="dll-file-names">DLL File Names</h2>
-<p>Once a DLL is loaded the file is locked for writing so if we try to compile the same DLL after the changes we will get an error. Even though the file is locked for writing it can still be renamed which will allow us to compile a new version. For fun and diversity the renaming code is written in python and can be executed it by running rename_old.bat</p>
+<p>Once a DLL is loaded the file is locked for writing so if we try to compile the same DLL after the changes we will get an error. Even though the file is locked for writing it can still be renamed which will allow us to compile a new version. For fun and diversity the renaming code is written in python and can be executed by running rename_old.bat</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#ff79c6">import</span> uuid
 <span style="color:#ff79c6">import</span> os
 
@@ -248,7 +248,7 @@ os<span style="color:#ff79c6">.</span>rename(new_dll, old_dll)
 <li>When a DLL is loaded with LoadLibrary(&ldquo;originalFileName.dll&rdquo;) any subsequent call to LoadLibrary(&ldquo;originalFileName.dll&rdquo;) will return a handle to the same DLL even if the file has been renamed and a different file is now called &ldquo;originalFileName.dll&rdquo;</li>
 <li>If we rename a loaded DLL to &ldquo;newFileName.dll&rdquo; and call LoadLibrary(&ldquo;newFileName.dll&rdquo;) it will return a handle to the original DLL only while the file name is still &ldquo;newFileName.dll&rdquo;</li>
 </ol>
-<p>Every time we rename and compile a new DLL their names would be ExampleDLL.dll and ExampleDLL_old.dll so in order to always get a handle to the correct DLL we can rename it to an unique temporary name, load it with the new name and rename it back</p>
+<p>Every time we rename and compile a new DLL the file names would be somthing like ExampleDLL.dll and ExampleDLL_old.dll so in order to always get a handle to the correct DLL we can rename it to an unique temporary name, load it with the new name and rename it back.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++">HMODULE <span style="color:#50fa7b">LoadLibraryWithRename</span>(<span style="color:#ff79c6">const</span> <span style="color:#8be9fd">char</span><span style="color:#ff79c6">*</span> name)
 {
     <span style="color:#ff79c6">auto</span> tmp_name <span style="color:#ff79c6">=</span> GetNewGUID() <span style="color:#ff79c6">+</span> <span style="color:#f1fa8c">&#34;_tmp.dll&#34;</span>;
@@ -259,7 +259,7 @@ os<span style="color:#ff79c6">.</span>rename(new_dll, old_dll)
     <span style="color:#ff79c6">return</span> library;
 }
 </code></pre></div><h2 id="intergaration-with-existing-project">Intergaration with Existing Project</h2>
-<p>While DLLReplacer can be used as a single header library or as a DLL and both approaches can be easily integrated into an existing project we can take borrow a trick from the previous blog post and use DLL injection.
+<p>While DLLReplacer can be used as a single header library or as a DLL and both approaches can be easily integrated into an existing project we can borrow a trick from the previous blog post and use DLL injection.
 Running DLLIinjector.exe processname.exe DLLReplacer.DLL will replace a DLL in your process by using DLL injection and without the need to modify anything in your project.</p>
 <h2 id="typical-workflow">Typical Workflow</h2>
 <ol>
@@ -268,17 +268,17 @@ Running DLLIinjector.exe processname.exe DLLReplacer.DLL will replace a DLL in y
 <li>Run rename_old.bat</li>
 <li>Compile the modified DLL (detach the debugger if needed)</li>
 <li>Run replace_dll.bat</li>
-<li>Repeat steps 2-5 in order to live reload new changes</li>
+<li>Repeat steps 2-5 in order to live reload the new changes</li>
 </ol>
 <h2 id="limitations">Limitations</h2>
 <ol>
-<li>Any changes to the memory layout can&rsquo;t be live reloaded. For example adding/removing data members or virtual functions since it will change the layout of the virtual table. Having a mechanism to serialize and deserialize all objects can be used to solve this problem, but it isn&rsquo;t in the scope of this library.</li>
-<li>If an exported function&rsquo;s symbol has changed, for example by renaming it or changing it&rsquo;s signature it wouldn&rsquo;t be hooked.</li>
+<li>Any changes to the memory layout can&rsquo;t be live reloaded for example adding/removing data members (or virtual functions since it will change the layout of the virtual table). Having a mechanism to serialize and deserialize all objects can be used to solve this problem, but it isn&rsquo;t in the scope of this library.</li>
+<li>If an exported function&rsquo;s symbol has changed, for example by renaming it or changing it&rsquo;s signature, it wouldn&rsquo;t be hooked.</li>
 <li>All of the static data including static data members and static variables will be loaded multiple times which might cause problems. This can sometimes be avoided by using the regex symbol filtering.</li>
 <li>Having too many hooks can hurt performance.</li>
 </ol>
-<h2 id="possible-future-improvement">Possible Future Improvement</h2>
-<p>A direction that could be worth investigating is parsing the PDB file and hooking all the functions instead of only the exported ones, this can have the benefit of also replacing non exported functions. Another possible improvement is to hook all previous versions of a DLL. This can increase performance by having only one hook jump instead of many in the cost of slightly slower load times since all previous versions needs to be hooked. This is already implemented in the DLLReloader class, but not as an injectable DLL.</p>
+<h2 id="possible-future-improvements">Possible Future Improvements</h2>
+<p>A direction that could be worth investigating is parsing the PDB file and hooking all the functions instead of only the exported ones since it will enable replacing non exported functions. Another possible improvement is to hook all previous versions of a DLL. This can increase performance by always having only one hook jump instead of many at the cost of slightly slower load times since all previous versions of each function needs to be hooked. This is already implemented in the DLLReloader class but not as an injectable DLL.</p>
 <h1 id="conclusion">Conclusion</h1>
 <p>While there are still some limitations having fast iterations with zero integration effort has already saved me a lot of time and was definitely worth it for under 200 lines of cpp and a very short python script. I hope it will be helpful or educational to you too.</p>
 
