@@ -319,6 +319,8 @@ Lets transition to compile-time validation by replacing m_destroyed with a meta 
 </span></span><span style="display:flex;"><span>        <span style="color:#ff7b72">class</span> <span style="color:#f0883e;font-weight:bold">T</span> <span style="color:#ff7b72;font-weight:bold">=</span> <span style="color:#ff7b72">typename</span> state<span style="color:#ff7b72;font-weight:bold">::</span><span style="color:#ff7b72">template</span> get<span style="color:#ff7b72;font-weight:bold">&lt;&gt;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff7b72;font-weight:bold">&gt;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff7b72">auto</span><span style="color:#ff7b72;font-weight:bold">&amp;</span> get() {
+</span></span><span style="display:flex;"><span>        <span style="color:#ff7b72">static_assert</span>(<span style="color:#ff7b72;font-weight:bold">!</span>std<span style="color:#ff7b72;font-weight:bold">::</span>is_same_v<span style="color:#ff7b72;font-weight:bold">&lt;</span>T, destroyed<span style="color:#ff7b72;font-weight:bold">&gt;</span>, <span style="color:#a5d6ff">&#34;object already destroyed&#34;</span>);
+</span></span><span style="display:flex;"><span>        
 </span></span><span style="display:flex;"><span>        <span style="color:#ff7b72">return</span> m_value; 
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>
