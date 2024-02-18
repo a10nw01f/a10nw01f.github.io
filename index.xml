@@ -6,12 +6,12 @@
     <description>Recent content on Alon Wolf</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 15 Feb 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 18 Feb 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://a10nw01f.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Borrow Checker, Lifetimes and Destructor Arguments in C&#43;&#43;</title>
       <link>https://a10nw01f.github.io/post/advanced_compile_time_validation/</link>
-      <pubDate>Thu, 15 Feb 2024 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 18 Feb 2024 00:00:00 +0000</pubDate>
       <guid>https://a10nw01f.github.io/post/advanced_compile_time_validation/</guid>
       <description>Library and Code Below is a detailed explanation, but if you prefer to dive straight into the complete implementation code, you can find it on this GitHub repository:&#xA;https://github.com/a10nw01f/Mitzi/&#xA;Or on compiler explorer:&#xA;https://godbolt.org/z/71qs619Ge&#xA;Safety in C++ In the realm of modern software development, ensuring memory safety and guarding against security vulnerabilities remains paramount, particularly in languages like C++ which faced some criticism.&#xA;Bjarne Stroustrup addressed this topic in this year&amp;rsquo;s CppCon opening keynote which I had both the great pleasure of hearing in person and the immense stress of presenting immediately after.</description>
     </item>
