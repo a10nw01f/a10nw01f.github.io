@@ -310,6 +310,7 @@ Lets transition to compile-time validation by replacing m_destroyed with a meta 
 </span></span><span style="display:flex;"><span><span style="color:#ff7b72">template</span><span style="color:#ff7b72;font-weight:bold">&lt;</span><span style="color:#ff7b72">auto</span> eval <span style="color:#ff7b72;font-weight:bold">=</span> []{}<span style="color:#ff7b72;font-weight:bold">&gt;</span>
 </span></span><span style="display:flex;"><span><span style="color:#ff7b72">class</span> <span style="color:#f0883e;font-weight:bold">handle</span> {
 </span></span><span style="display:flex;"><span>    <span style="color:#ff7b72">using</span> state <span style="color:#ff7b72;font-weight:bold">=</span> meta_state<span style="color:#ff7b72;font-weight:bold">&lt;</span>none, eval<span style="color:#ff7b72;font-weight:bold">&gt;</span>;
+</span></span><span style="display:flex;"><span>    texture m_texture;
 </span></span><span style="display:flex;"><span><span style="color:#ff7b72">public</span><span style="color:#ff7b72;font-weight:bold">:</span>
 </span></span><span style="display:flex;"><span>    handle(texture tex)<span style="color:#ff7b72;font-weight:bold">:</span> 
 </span></span><span style="display:flex;"><span>        m_texture(tex)
