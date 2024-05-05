@@ -180,11 +180,11 @@
 <h1 id="safety-in-c">Safety in C++</h1>
 <p>In the realm of modern software development, ensuring memory safety and guarding against security vulnerabilities remains paramount, particularly in languages like C++ which faced some <a href="https://media.defense.gov/2022/Nov/10/2003112742/-1/-1/0/CSI_SOFTWARE_MEMORY_SAFETY.PDF">criticism</a>.</p>
 <p>Bjarne Stroustrup addressed this topic in this year&rsquo;s CppCon opening <a href="https://www.youtube.com/watch?v=I8UvQKvOSSw">keynote</a> which I had both the great pleasure of hearing in person and the immense stress of presenting immediately after.</p>
-<p>He talked about the <a href="https://github.com/BjarneStroustrup/profiles">profiles</a> proposal where each profile provides different restrications and validations of wht can be used in a specific code section. He also explored leveraging attributes and static analysis tools to enhance validation, such as detecting reference invalidation after modifying a container.</p>
+<p>He talked about the <a href="https://github.com/BjarneStroustrup/profiles">profiles</a> proposal where each profile provides different restrictions and validations of what can be used in a specific code section. He also explored leveraging attributes and static analysis tools to enhance validation, such as detecting reference invalidation after modifying a container.</p>
 <p>His insights sparked my curiosity: could we leverage modern C++ compile-time programming techniques to implement these validations?</p>
 <h1 id="stateful-metaprogramming">Stateful Metaprogramming</h1>
 <p>Stateful metaprogramming involves manipulating friend functions and template instantiation in C++ to introduce usable state into compilation, allowing for surprising behaviors like impure constexpr functions.</p>
-<p>An in-depth explanation of stateful metaprogramming including it&rsquo;s history and implementation are available in this amazing blogpost:<br>
+<p>An in-depth explanation of stateful metaprogramming including its history and implementation is available in this amazing blog post:
 <a href="https://mc-deltat.github.io/articles/stateful-metaprogramming-cpp20">https://mc-deltat.github.io/articles/stateful-metaprogramming-cpp20</a></p>
 <h3 id="meta-state">Meta State</h3>
 <p>I wrapped the stateful metaprogramming facilities described above in class which represents a meta state that holds a type along with getters and a setter to change the type stored in the meta state.</p>
@@ -217,14 +217,14 @@
 </span></span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic"></span>state<span style="color:#ff7b72;font-weight:bold">::</span>get<span style="color:#ff7b72;font-weight:bold">&lt;&gt;</span> a <span style="color:#ff7b72;font-weight:bold">=</span> <span style="color:#a5d6ff">42</span>;
 </span></span><span style="display:flex;"><span><span style="color:#ff7b72">static_assert</span>(std<span style="color:#ff7b72;font-weight:bold">::</span>is_same_v<span style="color:#ff7b72;font-weight:bold">&lt;</span><span style="color:#ff7b72">decltype</span>(a), <span style="color:#ff7b72">int</span><span style="color:#ff7b72;font-weight:bold">&gt;</span>, <span style="color:#a5d6ff">&#34;&#34;</span>);
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic">// set state to contains const char*
+</span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic">// set state to const char*
 </span></span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic"></span><span style="color:#ff7b72">using</span> T <span style="color:#ff7b72;font-weight:bold">=</span> state<span style="color:#ff7b72;font-weight:bold">::</span>set<span style="color:#ff7b72;font-weight:bold">&lt;</span><span style="color:#ff7b72">const</span> <span style="color:#ff7b72">char</span><span style="color:#ff7b72;font-weight:bold">*&gt;</span>();
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic">// and this is how you use it
 </span></span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic"></span>state<span style="color:#ff7b72;font-weight:bold">::</span>get<span style="color:#ff7b72;font-weight:bold">&lt;&gt;</span> b <span style="color:#ff7b72;font-weight:bold">=</span> <span style="color:#a5d6ff">&#34;this is amazing&#34;</span>;
 </span></span><span style="display:flex;"><span><span style="color:#ff7b72">static_assert</span>(std<span style="color:#ff7b72;font-weight:bold">::</span>is_same_v<span style="color:#ff7b72;font-weight:bold">&lt;</span><span style="color:#ff7b72">decltype</span>(b), <span style="color:#ff7b72">const</span> <span style="color:#ff7b72">char</span><span style="color:#ff7b72;font-weight:bold">*&gt;</span>, <span style="color:#a5d6ff">&#34;&#34;</span>);
 </span></span></code></pre></div><h3 id="modifying-meta-states">Modifying Meta States</h3>
-<p>One thing to keep in mind is that meta states don&rsquo;t work like regular variables, for example the following code will not change the meta state:</p>
+<p>One thing to keep in mind is that meta states don&rsquo;t work like regular variables, for example, the following code will not change the meta state:</p>
 <div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#ff7b72">template</span><span style="color:#ff7b72;font-weight:bold">&lt;</span><span style="color:#ff7b72">class</span> <span style="color:#f0883e;font-weight:bold">state</span><span style="color:#ff7b72;font-weight:bold">&gt;</span>
 </span></span><span style="display:flex;"><span><span style="color:#ff7b72">void</span> modify(){
 </span></span><span style="display:flex;"><span>    <span style="color:#ff7b72">using</span> T <span style="color:#ff7b72;font-weight:bold">=</span> state<span style="color:#ff7b72;font-weight:bold">::</span><span style="color:#ff7b72">template</span> set<span style="color:#ff7b72;font-weight:bold">&lt;</span><span style="color:#ff7b72">const</span> <span style="color:#ff7b72">char</span><span style="color:#ff7b72;font-weight:bold">*&gt;</span>;
@@ -272,7 +272,7 @@
 </span></span><span style="display:flex;"><span>    <span style="color:#8b949e;font-style:italic">/*...*/</span>
 </span></span><span style="display:flex;"><span>};
 </span></span></code></pre></div><p>I want to avoid storing the device with every object but still get a compilation error if I forget to destroy an object.
-Lets implement it in runtime before transitioning to compile-time:</p>
+Let&rsquo;s implement it in runtime before transitioning to compile-time:</p>
 <div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#ff7b72">class</span> <span style="color:#f0883e;font-weight:bold">handle</span> {
 </span></span><span style="display:flex;"><span>    texture m_texture;
 </span></span><span style="display:flex;"><span>    <span style="color:#ff7b72">bool</span> m_destroyed <span style="color:#ff7b72;font-weight:bold">=</span> false;
@@ -303,7 +303,7 @@ Lets implement it in runtime before transitioning to compile-time:</p>
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>};
 </span></span></code></pre></div><p>The runtime validation uses the m_destroyed data member.
-Lets transition to compile-time validation by replacing m_destroyed with a meta state.</p>
+Let&rsquo;s transition to compile-time validation by replacing m_destroyed with a meta state.</p>
 <div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#ff7b72">struct</span> <span style="color:#f0883e;font-weight:bold">none</span>{};
 </span></span><span style="display:flex;"><span><span style="color:#ff7b72">struct</span> <span style="color:#f0883e;font-weight:bold">destroyed</span>{};
 </span></span><span style="display:flex;"><span>
@@ -342,8 +342,8 @@ Lets transition to compile-time validation by replacing m_destroyed with a meta 
 </span></span><span style="display:flex;"><span>        <span style="color:#ff7b72">static_assert</span>(std<span style="color:#ff7b72;font-weight:bold">::</span>is_same_v<span style="color:#ff7b72;font-weight:bold">&lt;</span>T, destroyed<span style="color:#ff7b72;font-weight:bold">&gt;</span>, <span style="color:#a5d6ff">&#34;forgot to destroy object&#34;</span>);
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>};
-</span></span></code></pre></div><p>There is problem with the code above - destructors can&rsquo;t be templates and we need template parameters to reliably read and write the meta state.</p>
-<p>We know that the destructor will be called in the end of the scope so one option is to manually validate that the state is destroyed.</p>
+</span></span></code></pre></div><p>There is problem with the code above: destructors can&rsquo;t be templates, and we need template parameters to reliably read and write the meta state.</p>
+<p>We know that the destructor will be called in the end of the scope, so one option is to manually validate that the state is destroyed.</p>
 <div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>    <span style="color:#8b949e;font-style:italic">/* create the handle */</span>
 </span></span><span style="display:flex;"><span>
@@ -351,9 +351,9 @@ Lets transition to compile-time validation by replacing m_destroyed with a meta 
 </span></span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic"></span>    <span style="color:#ff7b72">static_assert</span>(std<span style="color:#ff7b72;font-weight:bold">::</span>is_same_v<span style="color:#ff7b72;font-weight:bold">&lt;</span><span style="color:#ff7b72">decltype</span>(texture_view)<span style="color:#ff7b72;font-weight:bold">::</span>state<span style="color:#ff7b72;font-weight:bold">::</span>get<span style="color:#ff7b72;font-weight:bold">&lt;&gt;</span>, destroyed<span style="color:#ff7b72;font-weight:bold">&gt;</span>, <span style="color:#a5d6ff">&#34;&#34;</span>);
 </span></span><span style="display:flex;"><span>    <span style="color:#ff7b72">static_assert</span>(std<span style="color:#ff7b72;font-weight:bold">::</span>is_same_v<span style="color:#ff7b72;font-weight:bold">&lt;</span><span style="color:#ff7b72">decltype</span>(texture)<span style="color:#ff7b72;font-weight:bold">::</span>state<span style="color:#ff7b72;font-weight:bold">::</span>get<span style="color:#ff7b72;font-weight:bold">&lt;&gt;</span>, destroyed<span style="color:#ff7b72;font-weight:bold">&gt;</span>, <span style="color:#a5d6ff">&#34;&#34;</span>);
 </span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><p>But this can quickly become tedious if we have many variables or for robust validation logic where the order of calls to validate matters.</p>
+</span></span></code></pre></div><p>But this can quickly become tedious if we have many variables or have robust validation logic where the order of calls to validate matters.</p>
 <h1 id="defer">Defer</h1>
-<p>To alleviate the burden of manually validating the state destruction at the end of the scope, we can employ a defer class. This class acts as a deferred executor for meta state validation and modification, ensuring that certain operations are postponed until the end of the scope.</p>
+<p>To alleviate the burden of manually validating the state destruction at the end of the scope, we can use the following defer class. This class acts as a deferred executor for meta state validation and modification, ensuring that certain operations are postponed until the end of the scope.</p>
 <div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#ff7b72">template</span><span style="color:#ff7b72;font-weight:bold">&lt;</span><span style="color:#ff7b72">auto</span> eval <span style="color:#ff7b72;font-weight:bold">=</span> [] {} <span style="color:#ff7b72;font-weight:bold">&gt;</span>
 </span></span><span style="display:flex;"><span><span style="color:#ff7b72">struct</span> <span style="color:#f0883e;font-weight:bold">defer</span> {
 </span></span><span style="display:flex;"><span>	<span style="color:#ff7b72">using</span> state <span style="color:#ff7b72;font-weight:bold">=</span> meta_state<span style="color:#ff7b72;font-weight:bold">&lt;</span>type_list<span style="color:#ff7b72;font-weight:bold">&lt;&gt;</span>, eval<span style="color:#ff7b72;font-weight:bold">&gt;</span>;
@@ -372,7 +372,7 @@ Lets transition to compile-time validation by replacing m_destroyed with a meta 
 </span></span><span style="display:flex;"><span>        });
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>};
-</span></span></code></pre></div><p>The constructor of the handle class defers the call which validates that it was destroyed.</p>
+</span></span></code></pre></div><p>The constructor of the handle class defers the call that validates the resource has been destroyed.</p>
 <div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#ff7b72">template</span><span style="color:#ff7b72;font-weight:bold">&lt;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff7b72">class</span> <span style="color:#f0883e;font-weight:bold">defer</span>,
 </span></span><span style="display:flex;"><span>    <span style="color:#ff7b72">class</span> <span style="color:#f0883e;font-weight:bold">T</span> <span style="color:#ff7b72;font-weight:bold">=</span> <span style="color:#ff7b72">typename</span> defer<span style="color:#ff7b72;font-weight:bold">::</span><span style="color:#ff7b72">template</span> push<span style="color:#ff7b72;font-weight:bold">&lt;</span>
@@ -380,7 +380,7 @@ Lets transition to compile-time validation by replacing m_destroyed with a meta 
 </span></span><span style="display:flex;"><span>    <span style="color:#ff7b72;font-weight:bold">&gt;</span>
 </span></span><span style="display:flex;"><span><span style="color:#ff7b72;font-weight:bold">&gt;</span>
 </span></span><span style="display:flex;"><span>handle(defer, texture tex) <span style="color:#8b949e;font-style:italic">/*...*/</span>
-</span></span></code></pre></div><p>Combining handles with defer:</p>
+</span></span></code></pre></div><p>Using handles with defer:</p>
 <div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>{
 </span></span><span style="display:flex;"><span>    <span style="color:#ff7b72">using</span> defer_scope <span style="color:#ff7b72;font-weight:bold">=</span> defer<span style="color:#ff7b72;font-weight:bold">&lt;&gt;</span>;
 </span></span><span style="display:flex;"><span>    
@@ -428,9 +428,9 @@ Lets transition to compile-time validation by replacing m_destroyed with a meta 
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic">// outer_ptr points to y which was already destroyed
 </span></span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic"></span>std<span style="color:#ff7b72;font-weight:bold">::</span>cout <span style="color:#ff7b72;font-weight:bold">&lt;&lt;</span> <span style="color:#ff7b72;font-weight:bold">*</span>outer_ptr;
-</span></span></code></pre></div><p>we can represent the lifetime of a variable with two integers - depth and counter.<br>
-Depth - how deep it is in the scope stack.<br>
-Counter - a counter that is inceremented for each variable.</p>
+</span></span></code></pre></div><p>We can represent the lifetime of a variable with two integers: depth and counter.<br>
+Depth: how deep it is in the scope stack.<br>
+Counter: a counter that is inceremented for each variable.</p>
 <div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#ff7b72">int</span> v0; <span style="color:#8b949e;font-style:italic">// counter = 0, depth = 0
 </span></span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic"></span><span style="color:#ff7b72">int</span> v1; <span style="color:#8b949e;font-style:italic">// counter = 1, depth = 0
 </span></span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic"></span>{
@@ -440,7 +440,7 @@ Counter - a counter that is inceremented for each variable.</p>
 </span></span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic"></span>    }
 </span></span><span style="display:flex;"><span>} 
 </span></span><span style="display:flex;"><span><span style="color:#ff7b72">int</span> v4; <span style="color:#8b949e;font-style:italic">// counter = 4, depth = 0
-</span></span></span></code></pre></div><p>Lets turn it into a struct:</p>
+</span></span></span></code></pre></div><p>Let&rsquo;s turn it into a struct:</p>
 <div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#ff7b72">struct</span> <span style="color:#f0883e;font-weight:bold">lifetime</span> {
 </span></span><span style="display:flex;"><span>    <span style="color:#ff7b72">int</span> counter <span style="color:#ff7b72;font-weight:bold">=</span> <span style="color:#a5d6ff">0</span>;
 </span></span><span style="display:flex;"><span>    <span style="color:#ff7b72">int</span> depth <span style="color:#ff7b72;font-weight:bold">=</span> <span style="color:#a5d6ff">0</span>;
@@ -481,7 +481,7 @@ On new variable - increment counter and return the current lifetime</p>
 </span></span><span style="display:flex;"><span>        <span style="color:#ff7b72">return</span> defer_scope{};
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>};
-</span></span></code></pre></div><p>With this we can create a pointer type that validates lifetimes on assigment:</p>
+</span></span></code></pre></div><p>With this we can create a pointer type that validates lifetimes on assingment:</p>
 <div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#ff7b72">template</span><span style="color:#ff7b72;font-weight:bold">&lt;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff7b72">class</span> <span style="color:#f0883e;font-weight:bold">T</span>,
 </span></span><span style="display:flex;"><span>    <span style="color:#ff7b72">auto</span> lifetime
@@ -492,7 +492,7 @@ On new variable - increment counter and return the current lifetime</p>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff7b72">template</span><span style="color:#ff7b72;font-weight:bold">&lt;</span><span style="color:#ff7b72">auto</span> other_lifetime<span style="color:#ff7b72;font-weight:bold">&gt;</span>
 </span></span><span style="display:flex;"><span>    ptr<span style="color:#ff7b72;font-weight:bold">&amp;</span> <span style="color:#ff7b72">operator</span><span style="color:#ff7b72;font-weight:bold">=</span>(ptr<span style="color:#ff7b72;font-weight:bold">&lt;</span>T, other_lifetime<span style="color:#ff7b72;font-weight:bold">&gt;</span> other) {
-</span></span><span style="display:flex;"><span>        <span style="color:#ff7b72">static_assert</span>(other_lifetime.outlives(lifetime), <span style="color:#a5d6ff">&#34;life time is not long enough&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#ff7b72">static_assert</span>(other_lifetime.outlives(lifetime), <span style="color:#a5d6ff">&#34;lifetime is not long enough&#34;</span>);
 </span></span><span style="display:flex;"><span>        m_value <span style="color:#ff7b72;font-weight:bold">=</span> other.get();
 </span></span><span style="display:flex;"><span>        <span style="color:#ff7b72">return</span> <span style="color:#ff7b72;font-weight:bold">*</span><span style="color:#ff7b72">this</span>;
 </span></span><span style="display:flex;"><span>    }
@@ -501,7 +501,7 @@ On new variable - increment counter and return the current lifetime</p>
 </span></span><span style="display:flex;"><span><span style="color:#ff7b72">private</span><span style="color:#ff7b72;font-weight:bold">:</span>
 </span></span><span style="display:flex;"><span>    T<span style="color:#ff7b72;font-weight:bold">*</span> m_value;
 </span></span><span style="display:flex;"><span>};
-</span></span></code></pre></div><p>Changing the C++ pointers to the lifetime checked pointers in the dangling pointer example results in a static assert &ldquo;life time is not long enough&rdquo;</p>
+</span></span></code></pre></div><p>Changing the C++ pointers to the lifetime checked pointers in the dangling pointer example results in a static assert &ldquo;lifetime is not long enough&rdquo;</p>
 <div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#ff7b72">constexpr</span> <span style="color:#ff7b72">auto</span> lifetimes <span style="color:#ff7b72;font-weight:bold">=</span> lifetime_factory<span style="color:#ff7b72;font-weight:bold">&lt;&gt;</span>{};
 </span></span><span style="display:flex;"><span><span style="color:#ff7b72">using</span> defer_scope <span style="color:#ff7b72;font-weight:bold">=</span> <span style="color:#ff7b72">decltype</span>(lifetimes.begin_scope());
 </span></span><span style="display:flex;"><span>
@@ -513,19 +513,19 @@ On new variable - increment counter and return the current lifetime</p>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff7b72">int</span> y <span style="color:#ff7b72;font-weight:bold">=</span> <span style="color:#a5d6ff">43</span>;
 </span></span><span style="display:flex;"><span>    <span style="color:#ff7b72">auto</span> inner_ptr <span style="color:#ff7b72;font-weight:bold">=</span> ptr(y, lifetimes.add_lifetime());
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    outer_ptr <span style="color:#ff7b72;font-weight:bold">=</span> inner_ptr; <span style="color:#8b949e;font-style:italic">// static_assert &#34;life time is not long enough&#34;
+</span></span><span style="display:flex;"><span>    outer_ptr <span style="color:#ff7b72;font-weight:bold">=</span> inner_ptr; <span style="color:#8b949e;font-style:italic">// static_assert &#34;lifetime is not long enough&#34;
 </span></span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic"></span>
 </span></span><span style="display:flex;"><span>    defer_scope{}.apply();
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>defer_scope{}.apply();
 </span></span></code></pre></div><h1 id="borrow-checker">Borrow Checker</h1>
 <p>The borrow checker in Rust enforces a strict set of rules governing references to data: each piece of data can have either one mutable reference (&amp;mut T) or multiple immutable references (&amp;T) at any given time. This constraint prevents data races, dangling pointers, and memory corruption by ensuring exclusive mutation rights or concurrent read-only access to data.</p>
-<p>We can represents the borrow state of variable with two integers read_count and write_count:</p>
+<p>We can represent the borrow state of a variable with two integers - read_count and write_count:</p>
 <div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#ff7b72">struct</span> <span style="color:#f0883e;font-weight:bold">borrow_state</span> {
 </span></span><span style="display:flex;"><span>    <span style="color:#ff7b72">int</span> read_count <span style="color:#ff7b72;font-weight:bold">=</span> <span style="color:#a5d6ff">0</span>;
 </span></span><span style="display:flex;"><span>    <span style="color:#ff7b72">int</span> write_count <span style="color:#ff7b72;font-weight:bold">=</span> <span style="color:#a5d6ff">0</span>;
 </span></span><span style="display:flex;"><span>};
-</span></span></code></pre></div><p>The borrowable class holds private data member that can be accessed with two member function:</p>
+</span></span></code></pre></div><p>The borrowable class holds a private data member that can be accessed with two member functions:</p>
 <p>ref() const -&gt; const T&amp;</p>
 <ul>
 <li>asserts write_count == 0</li>
@@ -570,8 +570,8 @@ On new variable - increment counter and return the current lifetime</p>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>defer_scope{}.apply();
 </span></span></code></pre></div><h1 id="compiler-specific-behaviour">Compiler Specific Behaviour</h1>
-<p>Here are some compiler specific beaviours that I encountered while working on this:</p>
-<p>Reading/writing a meta state will not always work inside of a nested template. This can be solved by passing a unique lambda along the template instatiation:</p>
+<p>Here are some compiler-specific behaviours that I encountered while working on this:</p>
+<p>Reading/writing a meta state will not always work inside of a nested template. This can be solved by passing a unique lambda along the template instantiation:</p>
 <div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#ff7b72">template</span><span style="color:#ff7b72;font-weight:bold">&lt;</span><span style="color:#8b949e;font-style:italic">/*...*/</span><span style="color:#ff7b72;font-weight:bold">&gt;</span>
 </span></span><span style="display:flex;"><span><span style="color:#ff7b72">struct</span> <span style="color:#f0883e;font-weight:bold">defer</span>{
 </span></span><span style="display:flex;"><span>    <span style="color:#ff7b72">template</span><span style="color:#ff7b72;font-weight:bold">&lt;</span>
@@ -586,7 +586,7 @@ On new variable - increment counter and return the current lifetime</p>
 </span></span></code></pre></div><p>GCC generates errors when a template parameter is not provided to a member function call with a default template parameter of a unique lambda:</p>
 <div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span>defer_scope{}.apply(); <span style="color:#8b949e;font-style:italic">// compilation error only in GCC
 </span></span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic"></span>defer_scope{}.apply<span style="color:#ff7b72;font-weight:bold">&lt;</span>[]{}<span style="color:#ff7b72;font-weight:bold">&gt;</span>(); <span style="color:#8b949e;font-style:italic">// works on all 3 major compilers 
-</span></span></span></code></pre></div><p>When expeding a template parameter pack Clang evaluates the templates in reverse order:</p>
+</span></span></span></code></pre></div><p>When expanding a template parameter pack Clang evaluates the templates in reverse order:</p>
 <div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#8b949e;font-weight:bold;font-style:italic">#ifdef __clang__
 </span></span></span><span style="display:flex;"><span><span style="color:#8b949e;font-weight:bold;font-style:italic"></span>    <span style="color:#ff7b72">auto</span> list <span style="color:#ff7b72;font-weight:bold">=</span> reverse(List{}); <span style="color:#8b949e;font-style:italic">// reverse order for Clang
 </span></span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic"></span><span style="color:#8b949e;font-weight:bold;font-style:italic">#else
@@ -597,7 +597,7 @@ On new variable - increment counter and return the current lifetime</p>
 </span></span><span style="display:flex;"><span>        <span style="color:#8b949e;font-style:italic">/*...*/</span>
 </span></span><span style="display:flex;"><span>    }, list);
 </span></span></code></pre></div><h1 id="future-direction">Future Direction</h1>
-<p>This compile-time validation library is still in early development but here is the direction that I corrently have in mind for it&rsquo;s future:</p>
+<p>This compile-time validation library is still in early development, but here is the direction that I currently have in mind for its future:</p>
 <p>More robust analysis based on the type of the current scope and parent scopes</p>
 <div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#ff7b72">enum</span> <span style="color:#ff7b72">class</span> <span style="color:#f0883e;font-weight:bold">scope_type</span> {
 </span></span><span style="display:flex;"><span>    regular, <span style="color:#8b949e;font-style:italic">// inline scope { int x = 42; }
@@ -611,7 +611,7 @@ On new variable - increment counter and return the current lifetime</p>
 </span></span><span style="display:flex;"><span><span style="color:#ff7b72">class</span> <span style="color:#f0883e;font-weight:bold">defer</span> {
 </span></span><span style="display:flex;"><span>    <span style="color:#8b949e;font-style:italic">/*...*/</span>
 </span></span><span style="display:flex;"><span>};
-</span></span></code></pre></div><p>This can enable more robust validation for example that a handle is destroyed in all branch cases.</p>
+</span></span></code></pre></div><p>This can enable more robust validation, for example, that a handle is destroyed in all branch cases.</p>
 <div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#ff7b72">using</span> scope0 <span style="color:#ff7b72;font-weight:bold">=</span> defer<span style="color:#ff7b72;font-weight:bold">&lt;</span>none, scope_type<span style="color:#ff7b72;font-weight:bold">::</span>function<span style="color:#ff7b72;font-weight:bold">&gt;</span>;
 </span></span><span style="display:flex;"><span><span style="color:#ff7b72">auto</span> x <span style="color:#ff7b72;font-weight:bold">=</span> make_handle(scope0{}, device.create_texture());
 </span></span><span style="display:flex;"><span>
@@ -631,7 +631,7 @@ On new variable - increment counter and return the current lifetime</p>
 </span></span><span style="display:flex;"><span>    scope1{}.apply();
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic">// validate that all paths leads to x being detroyed
+</span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic">// validate that all the paths lead to x being detroyed
 </span></span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic"></span>scope0{}.apply();
 </span></span></code></pre></div><p>Or that it isn&rsquo;t destroyed multiple times in a loop:</p>
 <div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#ff7b72">using</span> scope0 <span style="color:#ff7b72;font-weight:bold">=</span> defer<span style="color:#ff7b72;font-weight:bold">&lt;</span>none, scope_type<span style="color:#ff7b72;font-weight:bold">::</span>function<span style="color:#ff7b72;font-weight:bold">&gt;</span>;
@@ -665,7 +665,7 @@ On new variable - increment counter and return the current lifetime</p>
 </span></span><span style="display:flex;"><span>        ptr<span style="color:#ff7b72;font-weight:bold">&lt;</span>T, lifetime<span style="color:#ff7b72;font-weight:bold">&gt;</span>,
 </span></span><span style="display:flex;"><span>        ptr<span style="color:#ff7b72;font-weight:bold">&lt;</span>T, other_lifetime<span style="color:#ff7b72;font-weight:bold">&gt;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff7b72;font-weight:bold">&gt;</span>){
-</span></span><span style="display:flex;"><span>        <span style="color:#ff7b72">static_assert</span>(other_lifetime.outlives(lifetime), <span style="color:#a5d6ff">&#34;life time is not long enough&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#ff7b72">static_assert</span>(other_lifetime.outlives(lifetime), <span style="color:#a5d6ff">&#34;lifetime is not long enough&#34;</span>);
 </span></span><span style="display:flex;"><span>    });
 </span></span></code></pre></div><p>This may be the way to implement profiles in current C++:</p>
 <div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#ff7b72">using</span> safe_profile <span style="color:#ff7b72;font-weight:bold">=</span> profile<span style="color:#ff7b72;font-weight:bold">&lt;</span>
@@ -673,7 +673,7 @@ On new variable - increment counter and return the current lifetime</p>
 </span></span><span style="display:flex;"><span>    validate_borrows,
 </span></span><span style="display:flex;"><span>    validate_destructors
 </span></span><span style="display:flex;"><span><span style="color:#ff7b72;font-weight:bold">&gt;</span>;
-</span></span></code></pre></div><p>The borrowable, ptr and handle classes will just be wrappers that calls validate. It will allow reusing these types with different validation logic. Hopefully when we get reflection in C++ we will be able to generate these wrapper classes automatically.</p>
+</span></span></code></pre></div><p>The borrowable, ptr, and handle classes will be wrappers that call validate. It will allow reusing these types with different validation logic. Hopefully, when we get reflection in C++ we will be able to generate these wrapper classes automatically.</p>
 <div class="highlight"><pre tabindex="0" style="color:#e6edf3;background-color:#0d1117;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#ff7b72">template</span><span style="color:#ff7b72;font-weight:bold">&lt;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#ff7b72">class</span> <span style="color:#f0883e;font-weight:bold">T</span>,
 </span></span><span style="display:flex;"><span>    <span style="color:#ff7b72">auto</span> lifetime
@@ -694,7 +694,7 @@ On new variable - increment counter and return the current lifetime</p>
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span><span style="color:#8b949e;font-style:italic">/*...*/</span>
 </span></span><span style="display:flex;"><span>};
-</span></span></code></pre></div><p>Lastly I want remove the calls in the beginning and end of every scope, maybe with macros?</p>
+</span></span></code></pre></div><p>Lastly, I want to remove the calls at the beginning and end of every scope, maybe with macros.</p>
 <h1 id="pros-and-cons">Pros and Cons</h1>
 <h2 id="pros">Pros</h2>
 <ul>
@@ -705,7 +705,7 @@ On new variable - increment counter and return the current lifetime</p>
 <p>Compile-time Validation: By leveraging stateful metaprogramming and compile-time techniques, we shift many safety checks from runtime to compile-time, catching errors before code execution.</p>
 </li>
 <li>
-<p>Enhanced Memory Safety: The techniques discussed in this blogpost significantly enhance memory safety in C++, guarding against common pitfalls such as dangling pointers, memory leaks, and invalid references.</p>
+<p>Enhanced Memory Safety: The techniques discussed in this blog post significantly enhance memory safety in C++, guarding against common pitfalls such as dangling pointers, memory leaks, and invalid references.</p>
 </li>
 </ul>
 <h2 id="cons">Cons</h2>
